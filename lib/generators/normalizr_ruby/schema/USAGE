@@ -1,0 +1,8 @@
+Description:
+    Generates a schema for the given resource.
+
+Example:
+    rails generate normalizr_ruby:schema user
+
+    This will create:
+        app/schemas/user_schema.rb
