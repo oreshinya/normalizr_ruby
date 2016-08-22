@@ -13,8 +13,8 @@ module NormalizrRuby
   end
 end
 
-require "action_controller/normalizable"
 require "normalizr_ruby/version"
 require "normalizr_ruby/key_transform"
 require "normalizr_ruby/schema"
 require "normalizr_ruby/converter"
+require "normalizr_ruby/normalizable"

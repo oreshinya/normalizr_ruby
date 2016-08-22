@@ -1,4 +1,4 @@
-module ActionController
+module NormalizrRuby
   module Normalizable
     extend ActiveSupport::Concern
     include ActionController::Renderers
