@@ -17,8 +17,9 @@ module NormalizrRuby
       @result = nil
     end
 
-    def normalize(resource, options = {})
-      @result = walk(resource, options)
+    def normalize(resource, options)
+      opts = options.presence || {}
+      @result = walk(resource, opts)
       key_transform = NormalizrRuby.config.key_transform
       normalized_hash = { result: @result, entitites: @entities }
       KeyTransform.send(key_transform, normalized_hash)
