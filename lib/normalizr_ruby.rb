@@ -1,3 +1,4 @@
+require "action_controller"
 require "active_support/core_ext/class/attribute"
 require "active_support/core_ext/hash/except"
 require "active_support/core_ext/hash/keys"
