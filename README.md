@@ -2,7 +2,7 @@
 [![Gem Version](https://badge.fury.io/rb/normalizr_ruby.svg)](https://badge.fury.io/rb/normalizr_ruby)
 [![Build Status](https://travis-ci.org/oreshinya/normalizr_ruby.svg?branch=master)](https://travis-ci.org/oreshinya/normalizr_ruby)
 
-[Normalizr](https://github.com/paularmstrong/normalizr) format JSON generator.
+[Normalizr](https://github.com/paularmstrong/normalizr) format JSON generator for API server.
 
 ## Installation
 
