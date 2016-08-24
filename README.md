@@ -1,41 +1,184 @@
 # NormalizrRuby
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/normalizr_ruby`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+[Normalizr](https://github.com/paularmstrong/normalizr) format JSON generator.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
 ```ruby
-gem 'normalizr_ruby'
+gem "normalizr_ruby"
 ```
 
-And then execute:
+## Getting Started
 
-    $ bundle
+Include `NormalizrRuby::Normalizable` in your 'ApplicationController':
 
-Or install it yourself as:
+```ruby
+class ApplicationController < ActionController::API
+  include NormalizrRuby::Normalizable
+end
+```
 
-    $ gem install normalizr_ruby
+Create a new normalizr's schema:
 
-## Usage
+```
+bundle exec rails g normalizr_ruby:schema user
+```
 
-TODO: Write usage instructions here
+This will generate a schema in `app/schemas/user_schema.rb` for your `User` model:
 
-## Development
+```ruby
+class UserSchema < NormalizrRuby::Schema
+  attribute :id
+end
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+You can customize it like this:
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```ruby
+class UserSchema < NormalizrRuby::Schema
+  attribute :id
+  attribute :first_name
+  attribute :last_name
+  attribute :full_name, if: :has_last_name?
+  association :team
+  association :comments, schema: CustomCommentSchema, if: :has_last_name?
 
-## Contributing
+  def full_name
+    "#{object.first_name} #{object.last_name}"
+  end
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/normalizr_ruby.
+  def has_last_name?
+    object.last_name.present?
+  end
+end
+```
 
+Render json like this:
+
+```ruby
+class UsersController < Applicationcontroller
+  def index
+    users = User.all
+    render json: users
+  end
+end
+```
+
+You will get response like this:
+
+```json
+{
+  "result": [1, 2],
+  "entities": {
+    "teams": {
+      "1": { "id": 1, "name": "Team A" }
+    },
+    "users": {
+      "1": { "id": 1, "firstName": "Michael", "lastName": "Jackson", "fullName": "Michael Jackson", "team": 1, "comments": [2, 4] },
+      "2": { "id": 2, "firstName": "Tom", "lastName": null, "team": 1 }
+    },
+    "comments": {
+      "2": { "id": 2, "body": "Hello :)" },
+      "4": { "id": 4, "body": "World ;)" }
+    }
+  }
+}
+```
+
+## Documents
+
+### Schema
+#### `::attribute(key, options)`
+Add an attribute to normalized entity.
+`if` option can make an attribute conditional, and it takes a symbol of a method name on the schema.
+
+#### `::association(key, options)`
+Add an association to normalized entity, and add associated entity to entities.
+`if` option can make an attribute conditional, and it takes a symbol of a method name on the schema.
+`schema` option can make specifying a schema.
+
+#### `#object`
+You can refer unnormalized resource.
+
+#### `#props`
+You can refer arbitray options.
+
+For example:
+
+```ruby
+class UserSchema < NormalizrRuby::Schema
+  attribute :id
+  attribute :hoge
+
+  def hoge
+    props[:arbitray_option]
+  end
+end
+
+def UsersController < Applicationcontroller
+  def show
+    user = User.find(params[:id])
+    render json: user, normalizr: { arbitray_option: 1 }
+  end
+end
+```
+
+#### `#context`
+You can refer any values in all schemas
+
+For example:
+
+```ruby
+class UserSchema < NormalizrRuby::Schema
+  attribute :id
+  attribute :is_current_user
+
+  def is_current_user 
+    context[:current_user].id == object.id
+  end
+end
+```
+
+### Render options
+
+You can pass `normalizr`, and can pass any options as `props`.
+But `schema` option can make specifying a schema.
+
+```ruby
+render json: user, normalizr: { schema: CustomUserSchema, hoge: 1, fuga: 2 }
+```
+
+### How to use context
+
+You have to implement `normalizr_context` in any controller.
+
+```ruby
+class ApplicationController < ActionController::API
+  include NormalizrRuby::Normalizable
+
+  def normalizr_context
+    { current_user: User.first }
+  end
+end
+```
+
+### Configuration
+
+You can specify key transform in your `config/initializers/normalizr_ruby.rb`.
+
+```ruby
+NormalizrRuby.config.key_transform = :camel_lower # default
+```
+
+| Option | Result |
+|----|----|
+| `:camel` | ExampleKey |
+| `:camel_lower` | exampleKey |
+| `:dash` | example-key |
+| `:unaltered` | the original, unaltered key |
+| `:underscore` | example_key |
+| `nil` | use the default |
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
+MIT
