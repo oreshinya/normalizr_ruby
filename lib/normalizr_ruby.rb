@@ -1,11 +1,5 @@
+require "active_support"
 require "action_controller"
-require "active_support/core_ext/class/attribute"
-require "active_support/core_ext/hash/except"
-require "active_support/core_ext/hash/keys"
-require "active_support/core_ext/object/blank"
-require "active_support/configurable"
-require "active_support/inflector"
-require "active_support/concern"
 
 module NormalizrRuby
   include ActiveSupport::Configurable
