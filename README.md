@@ -1,4 +1,5 @@
 # NormalizrRuby
+[![Build Status](https://travis-ci.org/oreshinya/normalizr_ruby.svg?branch=master)](https://travis-ci.org/oreshinya/normalizr_ruby)
 
 [Normalizr](https://github.com/paularmstrong/normalizr) format JSON generator.
 
