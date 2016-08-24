@@ -10,7 +10,7 @@ gem "normalizr_ruby"
 
 ## Getting Started
 
-Include `NormalizrRuby::Normalizable` in your 'ApplicationController':
+Include `NormalizrRuby::Normalizable` in your `ApplicationController`:
 
 ```ruby
 class ApplicationController < ActionController::API
@@ -94,7 +94,7 @@ Add an attribute to normalized entity.
 
 #### `::association(key, options)`
 Add an association to normalized entity, and add associated entity to entities.
-`if` option can make an attribute conditional, and it takes a symbol of a method name on the schema.
+`if` option can make an association conditional, and it takes a symbol of a method name on the schema.
 `schema` option can make specifying a schema.
 
 #### `#object`
