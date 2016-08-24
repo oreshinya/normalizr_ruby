@@ -21,7 +21,7 @@ module NormalizrRuby
       opts = options.presence || {}
       @result = walk(resource, opts)
       key_transform = NormalizrRuby.config.key_transform
-      normalized_hash = { result: @result, entitites: @entities }
+      normalized_hash = { result: @result, entities: @entities }
       KeyTransform.send(key_transform, normalized_hash)
     rescue SchemaNotFound => e
       resource
@@ -35,7 +35,7 @@ module NormalizrRuby
         schema_class = options[:schema].presence || self.class.get_schema_class(resource)
         schema = schema_class.new(resource, @context, options.except(:schema))
         result = schema.object.id
-        entity_key = schema.object.class.name.pluralize
+        entity_key = schema.object.class.name.pluralize.to_sym
         hash = schema.attributes
         schema.associations.each do |association, assoc_options|
           association_result = walk(schema.object.send(association), assoc_options)
