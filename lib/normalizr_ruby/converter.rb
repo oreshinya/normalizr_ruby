@@ -3,7 +3,7 @@ module NormalizrRuby
     class SchemaNotFound < StandardError; end
 
     def self.get_schema_class(resource)
-      resource_class_name = resource.class.name
+      resource_class_name = resource.class.base_class.name
       schema_class = "#{resource_class_name}Schema".safe_constantize
       if schema_class.nil?
         raise SchemaNotFound, "#{resource_class_name} is not found."
@@ -35,7 +35,7 @@ module NormalizrRuby
         schema_class = options[:schema].presence || self.class.get_schema_class(resource)
         schema = schema_class.new(resource, @context, options.except(:schema))
         result = schema.object.id
-        entity_key = schema.object.class.name.pluralize.to_sym
+        entity_key = schema.object.class.base_class.name.pluralize.to_sym
         hash = schema.attributes
         schema.associations.each do |association, assoc_options|
           association_result = walk(schema.object.send(association), assoc_options)
