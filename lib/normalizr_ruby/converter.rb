@@ -3,7 +3,9 @@ module NormalizrRuby
     class SchemaNotFound < StandardError; end
 
     def self.get_schema_class(resource)
-      resource_class_name = resource.class.base_class.name
+      resource_class = resource.class
+      resource_class = resource_class.base_class if resource_class.respond_to?(:base_class)
+      resource_class_name = resource_class.name
       schema_class = "#{resource_class_name}Schema".safe_constantize
       if schema_class.nil?
         raise SchemaNotFound, "#{resource_class_name} is not found."
