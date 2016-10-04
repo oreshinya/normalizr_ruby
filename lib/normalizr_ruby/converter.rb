@@ -40,7 +40,11 @@ module NormalizrRuby
         entity_key = schema.object.class.base_class.name.pluralize.to_sym
         hash = schema.attributes
         schema.associations.each do |association, assoc_options|
-          association_result = walk(schema.object.send(association), assoc_options)
+          if schema.object.send(association).nil?
+            association_result = nil
+          else
+            association_result = walk(schema.object.send(association), assoc_options)
+          end
           hash[association] = association_result
         end
         @entities[entity_key] ||= {}

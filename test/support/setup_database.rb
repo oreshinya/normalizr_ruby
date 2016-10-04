@@ -5,7 +5,12 @@ ActiveRecord::Base.establish_connection :test
 
 class CreateAllTables < ActiveRecord::Migration
   def self.up
+    create_table(:teams) do |t|
+      t.string :name
+    end
+
     create_table(:users) do |t|
+      t.integer :team_id
       t.string :first_name
       t.string :last_name
     end
