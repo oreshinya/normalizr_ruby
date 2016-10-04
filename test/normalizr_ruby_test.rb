@@ -2,15 +2,15 @@ require 'test_helper'
 
 class NormalizrRubyTest < Minitest::Test
   def setup
-    @team = Team.create(name: "Team 1")
-    @shinji = User.create(team: @team, first_name: "Shinji", last_name: "Okazaki")
-    @shinji.comments.create(body: "Shinji's comment")
-    @keisuke = User.create(first_name: "Keisuke", last_name: "Honda")
-    @keisuke.comments.create(body: "Keisuke's comment")
+    team = Team.create(name: "Team 1")
+    shinji = User.create(team: team, first_name: "Shinji", last_name: "Okazaki")
+    shinji.comments.create(body: "Shinji's comment")
+    keisuke = User.create(first_name: "Keisuke", last_name: "Honda")
+    keisuke.comments.create(body: "Keisuke's comment")
     User.all.each do |user|
       Reaction.create(user: user, comment: Comment.first)
     end
-    converter = NormalizrRuby::Converter.new({current_user: @shinji})
+    converter = NormalizrRuby::Converter.new({current_user: shinji})
     @normalized = converter.normalize(User.all, {
       with_full_name: true,
       with_last_name: false

@@ -45,5 +45,17 @@ module NormalizrRuby
       end
       hash
     end
+
+    def entity_key
+      object.class
+            .base_class
+            .name
+            .pluralize
+            .to_sym
+    end
+
+    def association_resource(association_key)
+      object.send(association_key)
+    end
   end
 end
