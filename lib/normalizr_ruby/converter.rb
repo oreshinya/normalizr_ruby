@@ -11,14 +11,17 @@ module NormalizrRuby
     def normalize(resource, options)
       opts = options.presence || {}
       @result = walk(resource, opts)
-      key_transform = NormalizrRuby.config.key_transform
-      normalized_hash = { result: @result, entities: @entities }
-      KeyTransform.send(key_transform, normalized_hash)
+      { result: @result, entities: @entities }
     rescue SchemaNotFound => e
       resource
     end
 
     private
+
+    def recase(value)
+      key_transform = NormalizrRuby.config.key_transform
+      KeyTransform.send(key_transform, value)
+    end
 
     def not_found(klass)
       raise SchemaNotFound, "#{klass.name}Schema is not found."
@@ -53,9 +56,9 @@ module NormalizrRuby
           hash[assoc] = assoc_result
         end
         result = schema.object.id
-        entity_key = schema.entity_key
+        entity_key = recase(schema.entity_key)
         @entities[entity_key] ||= {}
-        @entities[entity_key][result] = hash
+        @entities[entity_key][result] = recase(hash)
       end
       result
     end
