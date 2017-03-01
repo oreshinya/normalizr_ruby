@@ -47,11 +47,13 @@ module NormalizrRuby
     end
 
     def entity_key
-      object.class
-            .base_class
-            .name
-            .pluralize
-            .to_sym
+      klass = object.class
+      if klass.respond_to?(:base_class)
+        klass = klass.base_class
+      end
+      klass.name
+           .pluralize
+           .to_sym
     end
 
     def association_resource(association_key)
